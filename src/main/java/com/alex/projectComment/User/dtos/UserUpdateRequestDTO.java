@@ -1,7 +1,7 @@
-package com.alex.projectComment.dtos;
+package com.alex.projectComment.User.dtos;
 
-import com.alex.projectComment.entities.Role;
-import com.alex.projectComment.entities.User;
+import com.alex.projectComment.User.entities.Role;
+import com.alex.projectComment.User.entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

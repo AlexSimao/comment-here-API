@@ -1,15 +1,13 @@
-package com.alex.projectComment.controllers;
+package com.alex.projectComment.User.controllers;
 
-import com.alex.projectComment.auth.AuthLoginResponseDTO;
-import com.alex.projectComment.dtos.UserDTO;
-import com.alex.projectComment.auth.UserRegisterRequestDTO;
-import com.alex.projectComment.dtos.UserUpdateRequestDTO;
-import com.alex.projectComment.services.UserService;
+import com.alex.projectComment.User.auth.AuthLoginResponseDTO;
+import com.alex.projectComment.User.dtos.UserDTO;
+import com.alex.projectComment.User.dtos.UserUpdateRequestDTO;
+import com.alex.projectComment.User.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

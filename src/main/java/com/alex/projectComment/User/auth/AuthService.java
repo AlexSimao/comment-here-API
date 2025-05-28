@@ -1,14 +1,14 @@
-package com.alex.projectComment.auth;
+package com.alex.projectComment.User.auth;
 
-import com.alex.projectComment.dtos.RoleDTO;
-import com.alex.projectComment.entities.Role;
-import com.alex.projectComment.entities.User;
+import com.alex.projectComment.User.dtos.RoleDTO;
+import com.alex.projectComment.User.entities.Role;
+import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.security.TokenService;
-import com.alex.projectComment.repositories.RoleRepository;
-import com.alex.projectComment.repositories.UserRepository;
-import com.alex.projectComment.services.RoleService;
+import com.alex.projectComment.User.repositories.RoleRepository;
+import com.alex.projectComment.User.repositories.UserRepository;
+import com.alex.projectComment.User.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

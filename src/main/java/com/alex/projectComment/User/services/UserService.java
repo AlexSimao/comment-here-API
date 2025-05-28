@@ -1,14 +1,14 @@
-package com.alex.projectComment.services;
+package com.alex.projectComment.User.services;
 
-import com.alex.projectComment.auth.AuthLoginResponseDTO;
-import com.alex.projectComment.dtos.UserDTO;
-import com.alex.projectComment.dtos.UserUpdateRequestDTO;
-import com.alex.projectComment.entities.User;
+import com.alex.projectComment.User.auth.AuthLoginResponseDTO;
+import com.alex.projectComment.User.dtos.UserDTO;
+import com.alex.projectComment.User.dtos.UserUpdateRequestDTO;
+import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.exceptions.PermissionDeniedException;
 import com.alex.projectComment.infra.security.TokenService;
-import com.alex.projectComment.repositories.UserRepository;
+import com.alex.projectComment.User.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

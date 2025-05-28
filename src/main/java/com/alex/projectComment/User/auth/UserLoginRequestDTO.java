@@ -1,4 +1,4 @@
-package com.alex.projectComment.auth;
+package com.alex.projectComment.User.auth;
 
 public record UserLoginRequestDTO(String username, String password) {
 }

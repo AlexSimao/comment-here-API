@@ -1,4 +1,4 @@
-package com.alex.projectComment.entities;
+package com.alex.projectComment.User.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

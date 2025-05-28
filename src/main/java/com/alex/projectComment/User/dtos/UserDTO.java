@@ -1,13 +1,10 @@
-package com.alex.projectComment.dtos;
+package com.alex.projectComment.User.dtos;
 
-import com.alex.projectComment.entities.User;
-import com.alex.projectComment.repositories.UserRepository;
-import com.alex.projectComment.services.UserService;
+import com.alex.projectComment.User.entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @NoArgsConstructor
 @Setter

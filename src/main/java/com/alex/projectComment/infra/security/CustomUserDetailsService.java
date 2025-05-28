@@ -1,7 +1,7 @@
 package com.alex.projectComment.infra.security;
 
-import com.alex.projectComment.entities.User;
-import com.alex.projectComment.repositories.UserRepository;
+import com.alex.projectComment.User.entities.User;
+import com.alex.projectComment.User.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

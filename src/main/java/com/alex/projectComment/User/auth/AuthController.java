@@ -1,4 +1,4 @@
-package com.alex.projectComment.auth;
+package com.alex.projectComment.User.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

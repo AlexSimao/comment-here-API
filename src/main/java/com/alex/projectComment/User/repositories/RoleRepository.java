@@ -1,6 +1,6 @@
-package com.alex.projectComment.repositories;
+package com.alex.projectComment.User.repositories;
 
-import com.alex.projectComment.entities.Role;
+import com.alex.projectComment.User.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

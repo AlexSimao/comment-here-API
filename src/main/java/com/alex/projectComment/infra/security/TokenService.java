@@ -1,6 +1,6 @@
 package com.alex.projectComment.infra.security;
 
-import com.alex.projectComment.entities.User;
+import com.alex.projectComment.User.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;

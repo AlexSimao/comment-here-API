@@ -1,9 +1,9 @@
-package com.alex.projectComment.services;
+package com.alex.projectComment.User.services;
 
-import com.alex.projectComment.dtos.RoleDTO;
-import com.alex.projectComment.entities.Role;
+import com.alex.projectComment.User.dtos.RoleDTO;
+import com.alex.projectComment.User.entities.Role;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
-import com.alex.projectComment.repositories.RoleRepository;
+import com.alex.projectComment.User.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
