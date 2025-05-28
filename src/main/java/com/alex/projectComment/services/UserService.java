@@ -65,11 +65,13 @@ public class UserService {
       throw new PermissionDeniedException("Não autorizado a alterar um usuário que não seja o seu próprio.");
     }
 
-    entity.setFirstName(userUpdateRequestDTO.getFirstName() != null ? userUpdateRequestDTO.getFirstName() : entity.getFirstName());
-    entity.setLastName(userUpdateRequestDTO.getLastName() != null ? userUpdateRequestDTO.getLastName() : entity.getLastName());
-    entity.setUsername(userUpdateRequestDTO.getUsername() != null ? userUpdateRequestDTO.getUsername() : entity.getUsername());
-    entity.setEmail(userUpdateRequestDTO.getEmail() != null ? userUpdateRequestDTO.getEmail() : entity.getEmail());
-    entity.setPassword(userUpdateRequestDTO.getPassword() != null ? passwordEncoder.encode(userUpdateRequestDTO.getPassword()) : entity.getPassword());
+    entity.setFirstName(getNewOrDefault(userUpdateRequestDTO.getFirstName(), entity.getFirstName()));
+    entity.setLastName(getNewOrDefault(userUpdateRequestDTO.getLastName(), entity.getLastName()));
+    entity.setUsername(getNewOrDefault(userUpdateRequestDTO.getUsername(), entity.getUsername()));
+    entity.setEmail(getNewOrDefault(userUpdateRequestDTO.getEmail(), entity.getEmail()));
+    entity.setPassword(userUpdateRequestDTO.getPassword() != null
+        ? passwordEncoder.encode(userUpdateRequestDTO.getPassword())
+        : entity.getPassword());
 
     userRepository.save(entity);
 
@@ -79,8 +81,13 @@ public class UserService {
 //    Atualização de usuário gera um novo token. Necessário fazer logout(Atualizar token de sessão) para a conclusão da atualização de Usuário.
   }
 
+  //  Método auxiliar para retornar o novo valor se não for nulo, caso contrário retorna o valor atual.
+  private <T> T getNewOrDefault(T newValue, T currentValue) {
+    return newValue != null ? newValue : currentValue;
+  }
+
   @Transactional
-  public void deleteUser (Long id, HttpServletRequest request) {
+  public void deleteUser(Long id, HttpServletRequest request) {
     User entity = userRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Usuário com id: " + id + " não encontrado."));
 
