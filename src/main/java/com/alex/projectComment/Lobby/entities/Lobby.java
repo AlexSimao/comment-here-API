@@ -5,7 +5,7 @@ import com.alex.projectComment.User.entities.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,9 +19,9 @@ public class Lobby {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
-  private Timestamp creationDate;
+  private LocalDateTime creationDate;
   private List<String> tags;
-  private List<String> sites;
+  private List<String> domains;
 
   @Enumerated(EnumType.STRING)
   private VisibilityEnum visibility;
@@ -30,5 +30,9 @@ public class Lobby {
   private User creator;
   @ManyToOne
   private User userPrime;
+
+  @ManyToMany
+  @JoinTable(name = "user_admin_lobby", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "lobby_id"))
+  private List<User> usersAdmin;
 
 }
