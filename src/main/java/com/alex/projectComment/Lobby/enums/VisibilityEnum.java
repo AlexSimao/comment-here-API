@@ -1,5 +1,8 @@
 package com.alex.projectComment.Lobby.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum VisibilityEnum {
   PUBLIC(0),
   PRIVATE(1);
@@ -8,19 +11,6 @@ public enum VisibilityEnum {
 
   VisibilityEnum(int index) {
     this.index = index;
-  }
-
-  public int getIndex() {
-    return index;
-  }
-
-  public static boolean exists(String visibility) {
-    try {
-      valueOf(visibility);
-      return true;
-    } catch (IllegalArgumentException e) {
-      return false;
-    }
   }
 
 }

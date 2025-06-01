@@ -1,12 +1,10 @@
 package com.alex.projectComment.Lobby.dtos;
 
-import com.alex.projectComment.Lobby.entities.Lobby;
 import com.alex.projectComment.Lobby.enums.VisibilityEnum;
 import com.alex.projectComment.User.dtos.UserDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +25,5 @@ public class LobbyDTO {
   private UserDTO userPrime;
 
   private List<UserDTO> usersAdmin;
-
-  public LobbyDTO(Lobby entity) {
-    BeanUtils.copyProperties(entity, this);
-  }
 
 }

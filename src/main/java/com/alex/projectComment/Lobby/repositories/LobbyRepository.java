@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LobbyRepository extends JpaRepository<Lobby, Long> {
+  boolean existsByNameLikeIgnoreCase(String name);
 }
