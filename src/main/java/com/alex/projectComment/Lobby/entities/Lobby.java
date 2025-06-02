@@ -3,7 +3,10 @@ package com.alex.projectComment.Lobby.entities;
 import com.alex.projectComment.Lobby.enums.VisibilityEnum;
 import com.alex.projectComment.User.entities.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +23,11 @@ public class Lobby {
   private Long id;
   private String name;
   private LocalDateTime creationDate;
-  private List<String> tags;
+
+  @ManyToMany
+  @JoinTable(name = "lobby_tags")
+  private List<Tag> tags;
+
   private List<String> domains;
 
   @Enumerated(EnumType.STRING)

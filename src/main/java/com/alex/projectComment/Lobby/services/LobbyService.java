@@ -2,9 +2,10 @@ package com.alex.projectComment.Lobby.services;
 
 import com.alex.projectComment.Lobby.dtos.LobbyDTO;
 import com.alex.projectComment.Lobby.dtos.LobbyRequestDTO;
+import com.alex.projectComment.Lobby.dtos.TagDTO;
 import com.alex.projectComment.Lobby.entities.Lobby;
-import com.alex.projectComment.Lobby.enums.VisibilityEnum;
 import com.alex.projectComment.Lobby.mappers.LobbyMapper;
+import com.alex.projectComment.Lobby.mappers.TagMapper;
 import com.alex.projectComment.Lobby.repositories.LobbyRepository;
 import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.User.repositories.UserRepository;
@@ -32,6 +33,10 @@ public class LobbyService {
   private UserRepository userRepository;
   @Autowired
   private LobbyMapper lobbyMapper;
+  @Autowired
+  private TagMapper tagMapper;
+  @Autowired
+  private TagService tagService;
 
   @Transactional(readOnly = true)
   public Page<LobbyDTO> findAll(Pageable pageable) {
@@ -59,6 +64,12 @@ public class LobbyService {
       throw new IllegalArgumentException("O Lobby deve conter ao menos uma(1) tag. Assim facilitando o lobby ser encontrado.");
     }
 
+    List<TagDTO> tags = lobbyRequestDTO.tags().stream()
+        .map(tagName -> tagService.existsByName(tagName)
+            ? tagService.findByName(tagName)
+            : tagService.createTag(tagName))
+        .toList();
+
     String token = tokenService.recoverToken(request);
     User sectionUser = userRepository.findById(tokenService.getTokenId(token)).orElseThrow(() -> new EntityNotFoundException("Token de sessão invalido."));
 
@@ -75,7 +86,7 @@ public class LobbyService {
 
     lobby.setDomains(lobbyRequestDTO.domains());
     lobby.setName(lobbyRequestDTO.name());
-    lobby.setTags(lobbyRequestDTO.tags());
+    lobby.setTags(tagMapper.listDTOToListEntity(tags));
     lobby.setVisibility(lobbyRequestDTO.visibility());
     lobby.setCreationDate(LocalDateTime.now());
 

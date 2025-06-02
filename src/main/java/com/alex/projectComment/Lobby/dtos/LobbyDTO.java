@@ -1,5 +1,6 @@
 package com.alex.projectComment.Lobby.dtos;
 
+import com.alex.projectComment.Lobby.entities.Tag;
 import com.alex.projectComment.Lobby.enums.VisibilityEnum;
 import com.alex.projectComment.User.dtos.UserDTO;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class LobbyDTO {
   private Long id;
   private String name;
   private LocalDateTime creationDate;
-  private List<String> tags;
+  private List<Tag> tags;
   private List<String> domains;
 
   private VisibilityEnum visibility;

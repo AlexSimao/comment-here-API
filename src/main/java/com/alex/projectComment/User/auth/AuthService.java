@@ -3,12 +3,12 @@ package com.alex.projectComment.User.auth;
 import com.alex.projectComment.User.dtos.RoleDTO;
 import com.alex.projectComment.User.entities.Role;
 import com.alex.projectComment.User.entities.User;
-import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
-import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
-import com.alex.projectComment.infra.security.TokenService;
 import com.alex.projectComment.User.repositories.RoleRepository;
 import com.alex.projectComment.User.repositories.UserRepository;
 import com.alex.projectComment.User.services.RoleService;
+import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
+import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
+import com.alex.projectComment.infra.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,7 +68,7 @@ public class AuthService {
       newUser.setRoles(roles);
     }
 
-    userRepository.save(newUser);
+    newUser = userRepository.save(newUser);
 
     String token = tokenService.generateKeyToken(newUser);
     return new AuthLoginResponseDTO(newUser.getUsername(), token, "Novo Usuário registrado com Sucesso");
