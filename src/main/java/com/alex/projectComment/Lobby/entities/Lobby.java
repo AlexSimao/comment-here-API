@@ -1,7 +1,7 @@
 package com.alex.projectComment.Lobby.entities;
 
-import com.alex.projectComment.Lobby.enums.VisibilityEnum;
 import com.alex.projectComment.User.entities.User;
+import com.alex.projectComment.enums.VisibilityEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

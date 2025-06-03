@@ -1,6 +1,6 @@
 package com.alex.projectComment.Lobby.dtos;
 
-import com.alex.projectComment.Lobby.enums.VisibilityEnum;
+import com.alex.projectComment.enums.VisibilityEnum;
 
 import java.util.List;
 

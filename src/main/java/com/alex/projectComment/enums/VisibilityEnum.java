@@ -1,4 +1,4 @@
-package com.alex.projectComment.Lobby.enums;
+package com.alex.projectComment.enums;
 
 import lombok.Getter;
 

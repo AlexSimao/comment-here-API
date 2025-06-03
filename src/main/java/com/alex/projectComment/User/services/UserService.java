@@ -4,12 +4,12 @@ import com.alex.projectComment.User.auth.AuthLoginResponseDTO;
 import com.alex.projectComment.User.dtos.UserDTO;
 import com.alex.projectComment.User.dtos.UserUpdateRequestDTO;
 import com.alex.projectComment.User.entities.User;
+import com.alex.projectComment.User.repositories.UserRepository;
+import com.alex.projectComment.enums.StatusEnum;
 import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.exceptions.PermissionDeniedException;
 import com.alex.projectComment.infra.security.TokenService;
-import com.alex.projectComment.User.repositories.UserRepository;
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public Page<UserDTO> findAll(Pageable pageable) {
-    Page<User> result = userRepository.findAll(pageable);
+    Page<User> result = userRepository.findAllByStatus(StatusEnum.ACTIVE, pageable);
     return result.map(UserDTO::new);
   }
 
@@ -48,11 +48,11 @@ public class UserService {
       throw new IllegalArgumentException("Username não pode ser vazio ou 'null': " + userUpdateRequestDTO.getUsername());
     }
 
-    if (userRepository.existsByEmailLikeIgnoreCase(userUpdateRequestDTO.getEmail())) {
+    if (userRepository.existsByEmailAndStatusIgnoreCase(userUpdateRequestDTO.getEmail(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Este Email já esta em uso: " + userUpdateRequestDTO.getEmail());
     }
 
-    if (userRepository.existsByUsernameLikeIgnoreCase(userUpdateRequestDTO.getUsername())) {
+    if (userRepository.existsByUsernameAndStatusIgnoreCase(userUpdateRequestDTO.getUsername(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Este nome de Usuário já esta em uso: " + userUpdateRequestDTO.getUsername());
     }
 
@@ -61,7 +61,7 @@ public class UserService {
         .orElseThrow(() -> new EntityNotFoundException("Usuário com id: " + id + " não encontrado."));
 
     String token = tokenService.recoverToken(request);
-    if (!tokenService.validateToken(token).equals(entity.getUsername())) {
+    if (!tokenService.getTokenId(token).equals(entity.getId())) {
       throw new PermissionDeniedException("Não autorizado a alterar um usuário que não seja o seu próprio.");
     }
 
@@ -87,16 +87,18 @@ public class UserService {
   }
 
   @Transactional
-  public void deleteUser(Long id, HttpServletRequest request) {
+  public AuthLoginResponseDTO deleteUser(Long id, HttpServletRequest request) {
     User entity = userRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Usuário com id: " + id + " não encontrado."));
 
     String token = tokenService.recoverToken(request);
-    if (!tokenService.validateToken(token).equals(entity.getUsername())) {
+    if (!tokenService.getTokenId(token).equals(entity.getId())) {
       throw new PermissionDeniedException("Não autorizado a deletar um usuário que não seja o seu próprio.");
     }
 
-    userRepository.delete(entity);
+    entity.setStatus(StatusEnum.INACTIVE);
+    userRepository.save(entity);
+    return new AuthLoginResponseDTO(entity.getUsername(), null, "Usuário deletado com sucesso. Você será desconectado.");
   }
 
 

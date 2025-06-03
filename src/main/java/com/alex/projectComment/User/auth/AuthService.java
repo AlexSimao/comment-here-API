@@ -6,6 +6,7 @@ import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.User.repositories.RoleRepository;
 import com.alex.projectComment.User.repositories.UserRepository;
 import com.alex.projectComment.User.services.RoleService;
+import com.alex.projectComment.enums.StatusEnum;
 import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.security.TokenService;
@@ -28,7 +29,7 @@ public class AuthService {
 
   @Transactional
   public AuthLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
-    User user = userRepository.findByUsernameLikeIgnoreCase(userLoginRequestDTO.username())
+    User user = userRepository.findByUsernameAndStatusIgnoreCase(userLoginRequestDTO.username(), StatusEnum.ACTIVE)
         .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado/cadastrado."));
 
     if (!passwordEncoder.matches(userLoginRequestDTO.password(), user.getPassword())) {
@@ -41,11 +42,11 @@ public class AuthService {
 
   @Transactional
   public AuthLoginResponseDTO register(UserRegisterRequestDTO userRegisterRequestDTO) {
-    if (userRepository.existsByEmailLikeIgnoreCase(userRegisterRequestDTO.email())) {
+    if (userRepository.existsByEmailAndStatusIgnoreCase(userRegisterRequestDTO.email(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Este Email já esta em uso.");
     }
 
-    if (userRepository.existsByUsernameLikeIgnoreCase(userRegisterRequestDTO.username())) {
+    if (userRepository.existsByUsernameAndStatusIgnoreCase(userRegisterRequestDTO.username(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Este nome de Usuário já esta em uso.");
     }
 
@@ -55,6 +56,7 @@ public class AuthService {
     newUser.setEmail(userRegisterRequestDTO.email());
     newUser.setUsername(userRegisterRequestDTO.username());
     newUser.setPassword(passwordEncoder.encode(userRegisterRequestDTO.password()));
+    newUser.setStatus(StatusEnum.ACTIVE);
 
     if (newUser.getRoles() == null) { // Se não for enviado roles no request, define como padrão USER
       if (!roleRepository.existsByNameLikeIgnoreCase("USER")) {

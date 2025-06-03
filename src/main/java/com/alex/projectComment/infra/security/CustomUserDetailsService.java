@@ -2,6 +2,7 @@ package com.alex.projectComment.infra.security;
 
 import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.User.repositories.UserRepository;
+import com.alex.projectComment.enums.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Override
   @Transactional
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByUsernameLikeIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+    User user = userRepository.findByUsernameAndStatusIgnoreCase(username, StatusEnum.ACTIVE).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
     Set<GrantedAuthority> authorities = user.getRoles() == null ? Set.of()
         : user.getRoles().stream()

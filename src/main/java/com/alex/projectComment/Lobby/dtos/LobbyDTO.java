@@ -1,8 +1,8 @@
 package com.alex.projectComment.Lobby.dtos;
 
 import com.alex.projectComment.Lobby.entities.Tag;
-import com.alex.projectComment.Lobby.enums.VisibilityEnum;
 import com.alex.projectComment.User.dtos.UserDTO;
+import com.alex.projectComment.enums.VisibilityEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

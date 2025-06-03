@@ -1,9 +1,10 @@
 package com.alex.projectComment.User.entities;
 
+import com.alex.projectComment.enums.StatusEnum;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -24,6 +25,8 @@ public class User {
   private String username;
   private String email;
   private String password;
+  @Enumerated(EnumType.STRING)
+  private StatusEnum status;
 
   @ManyToMany
   @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
