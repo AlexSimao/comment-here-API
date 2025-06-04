@@ -41,4 +41,10 @@ public class LobbyController {
     LobbyDTO result = lobbyService.updateLobby(id, lobbyRequestDTO, request);
     return ResponseEntity.ok(result);
   }
+  
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletRequest request) {
+    lobbyService.deleteLobby(id, request);
+    return ResponseEntity.ok().build();
+  }
 }

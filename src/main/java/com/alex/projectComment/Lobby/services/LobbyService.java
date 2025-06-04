@@ -135,4 +135,22 @@ public class LobbyService {
   private <T> T getNewOrDefault(T newValue, T currentValue) {
     return newValue != null ? newValue : currentValue;
   }
+
+  @Transactional
+  public void deleteLobby(Long id, HttpServletRequest request) {
+    Lobby lobby = lobbyRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Lobby com o id: " + id + " não encontrado."));
+
+    String token = tokenService.recoverToken(request);
+
+    User sectionUser = userRepository.findById(tokenService.getTokenId(token))
+        .orElseThrow(() -> new EntityNotFoundException("Token de sessão invalido."));
+
+    if (!lobby.getUserPrime().equals(sectionUser)) {
+      throw new PermissionDeniedException("Não autorizado a excluir um Lobby que voçe não seja o User Prime.");
+    }
+
+    lobbyRepository.delete(lobby);
+
+  }
 }
