@@ -2,6 +2,7 @@ package com.alex.projectComment.Lobby.services;
 
 import com.alex.projectComment.Lobby.dtos.LobbyDTO;
 import com.alex.projectComment.Lobby.dtos.LobbyRequestDTO;
+import com.alex.projectComment.Lobby.dtos.LobbyUpdateRequestDTO;
 import com.alex.projectComment.Lobby.dtos.TagDTO;
 import com.alex.projectComment.Lobby.entities.Lobby;
 import com.alex.projectComment.Lobby.mappers.LobbyMapper;
@@ -96,7 +97,41 @@ public class LobbyService {
 
     lobby = lobbyRepository.save(lobby);
     return lobbyMapper.toDTO(lobby);
+  }
 
+  @Transactional
+  public LobbyDTO updateLobby(Long id, LobbyUpdateRequestDTO lobbyRequestDTO, HttpServletRequest request) {
+//    Admins não podem adicionar ou remover outros admins, apenas o User Prime do Lobby pode fazer isso.
+    Lobby lobby = lobbyRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Lobby com o id: " + id + " não encontrado."));
 
+    String token = tokenService.recoverToken(request);
+    User sectionUser = userRepository.findById(tokenService.getTokenId(token))
+        .orElseThrow(() -> new EntityNotFoundException("Token de sessão invalido."));
+
+    if (!lobby.getUsersAdmin().contains(sectionUser)) {
+      throw new IllegalArgumentException("O Usuário: " + sectionUser.getUsername() + " não é um administrador deste Lobby.");
+    }
+
+    if (lobbyRepository.existsByNameLikeIgnoreCase(lobbyRequestDTO.name())) {
+      throw new AlreadyInUseException("Ja existe um Lobby com esse nome: " + lobbyRequestDTO.name());
+    }
+
+    List<TagDTO> tags = lobbyRequestDTO.tags().stream()
+        .map(tagName -> tagService.existsByName(tagName)
+            ? tagService.findByName(tagName)
+            : tagService.createTag(tagName))
+        .toList();
+
+    lobby.setDomains(getNewOrDefault(lobbyRequestDTO.domains(), lobby.getDomains()));
+    lobby.setName(getNewOrDefault(lobbyRequestDTO.name(), lobby.getName()));
+    lobby.setTags(getNewOrDefault(tagMapper.listDTOToListEntity(tags), lobby.getTags()));
+    lobby.setVisibility(getNewOrDefault(lobbyRequestDTO.visibility(), lobby.getVisibility()));
+
+    return lobbyMapper.toDTO(lobbyRepository.save(lobby));
+  }
+
+  private <T> T getNewOrDefault(T newValue, T currentValue) {
+    return newValue != null ? newValue : currentValue;
   }
 }
