@@ -2,6 +2,7 @@ package com.alex.projectComment.Lobby.controllers;
 
 import com.alex.projectComment.Lobby.dtos.LobbyDTO;
 import com.alex.projectComment.Lobby.dtos.LobbyRequestDTO;
+import com.alex.projectComment.Lobby.dtos.LobbyUpdateRequestDTO;
 import com.alex.projectComment.Lobby.services.LobbyService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,12 @@ public class LobbyController {
   @PostMapping
   public ResponseEntity<LobbyDTO> create(@RequestBody LobbyRequestDTO lobbyRequestDTO, HttpServletRequest request) {
     LobbyDTO result = lobbyService.createLobby(lobbyRequestDTO, request);
+    return ResponseEntity.ok(result);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<LobbyDTO> update(@PathVariable Long id, @RequestBody LobbyUpdateRequestDTO lobbyRequestDTO, HttpServletRequest request) {
+    LobbyDTO result = lobbyService.updateLobby(id, lobbyRequestDTO, request);
     return ResponseEntity.ok(result);
   }
 }

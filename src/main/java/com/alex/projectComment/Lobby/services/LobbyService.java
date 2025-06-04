@@ -12,6 +12,7 @@ import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.User.repositories.UserRepository;
 import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
+import com.alex.projectComment.infra.exceptions.PermissionDeniedException;
 import com.alex.projectComment.infra.security.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +111,7 @@ public class LobbyService {
         .orElseThrow(() -> new EntityNotFoundException("Token de sessão invalido."));
 
     if (!lobby.getUsersAdmin().contains(sectionUser)) {
-      throw new IllegalArgumentException("O Usuário: " + sectionUser.getUsername() + " não é um administrador deste Lobby.");
+      throw new PermissionDeniedException("O Usuário " + sectionUser.getUsername() + " não é um administrador deste Lobby.");
     }
 
     if (lobbyRepository.existsByNameLikeIgnoreCase(lobbyRequestDTO.name())) {
