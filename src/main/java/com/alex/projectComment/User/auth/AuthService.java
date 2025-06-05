@@ -50,6 +50,10 @@ public class AuthService {
       throw new AlreadyInUseException("Este nome de Usuário já esta em uso.");
     }
 
+    if (userRegisterRequestDTO.password().isBlank() || userRegisterRequestDTO.password().length() < 6) {
+      throw new IllegalArgumentException("A senha deve ter pelo menos 6 caracteres.");
+    }
+
     User newUser = new User();
     newUser.setFirstName(userRegisterRequestDTO.firstName());
     newUser.setLastName(userRegisterRequestDTO.lastName());

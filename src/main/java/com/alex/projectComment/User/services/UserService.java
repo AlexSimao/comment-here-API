@@ -96,7 +96,7 @@ public class UserService {
       throw new PermissionDeniedException("Não autorizado a deletar um usuário que não seja o seu próprio.");
     }
 
-    entity.setStatus(StatusEnum.INACTIVE);
+    entity.setStatus(StatusEnum.DELETED);
     userRepository.save(entity);
     return new AuthLoginResponseDTO(entity.getUsername(), null, "Usuário deletado com sucesso. Você será desconectado.");
   }

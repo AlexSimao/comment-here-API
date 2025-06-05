@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum StatusEnum {
   INACTIVE(0),
-  ACTIVE(1);
+  ACTIVE(1),
+  DELETED(2);
 
   private final int index;
 
