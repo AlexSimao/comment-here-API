@@ -29,6 +29,14 @@ public class AuthService {
 
   @Transactional
   public AuthLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
+    if (userLoginRequestDTO.username().isBlank()) {
+      throw new IllegalArgumentException("O nome de Usuário não pode ser vazio.");
+    }
+
+    if (userLoginRequestDTO.password() == null || userLoginRequestDTO.password().isBlank()) {
+      throw new IllegalArgumentException("A senha não pode ser vazia.");
+    }
+
     User user = userRepository.findByUsernameAndStatusIgnoreCase(userLoginRequestDTO.username(), StatusEnum.ACTIVE)
         .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado/cadastrado."));
 
@@ -42,6 +50,18 @@ public class AuthService {
 
   @Transactional
   public AuthLoginResponseDTO register(UserRegisterRequestDTO userRegisterRequestDTO) {
+    if (userRegisterRequestDTO.email().isBlank()) {
+      throw new IllegalArgumentException("O Email não pode ser vazio.");
+    }
+
+    if (userRegisterRequestDTO.username().isBlank()) {
+      throw new IllegalArgumentException("O nome de Usuário não pode ser vazio.");
+    }
+
+    if (userRegisterRequestDTO.password() == null || userRegisterRequestDTO.password().isBlank()) {
+      throw new IllegalArgumentException("A senha não pode ser vazia.");
+    }
+
     if (userRepository.existsByEmailAndStatusIgnoreCase(userRegisterRequestDTO.email(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Este Email já esta em uso.");
     }
