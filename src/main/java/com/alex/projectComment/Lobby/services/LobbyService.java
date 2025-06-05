@@ -1,10 +1,8 @@
 package com.alex.projectComment.Lobby.services;
 
-import com.alex.projectComment.Lobby.dtos.LobbyDTO;
-import com.alex.projectComment.Lobby.dtos.LobbyRequestDTO;
-import com.alex.projectComment.Lobby.dtos.LobbyUpdateRequestDTO;
-import com.alex.projectComment.Lobby.dtos.TagDTO;
+import com.alex.projectComment.Lobby.dtos.*;
 import com.alex.projectComment.Lobby.entities.Lobby;
+import com.alex.projectComment.Lobby.mappers.DomainMapper;
 import com.alex.projectComment.Lobby.mappers.LobbyMapper;
 import com.alex.projectComment.Lobby.mappers.TagMapper;
 import com.alex.projectComment.Lobby.repositories.LobbyRepository;
@@ -39,6 +37,10 @@ public class LobbyService {
   private TagMapper tagMapper;
   @Autowired
   private TagService tagService;
+  @Autowired
+  private DomainService domainService;
+  @Autowired
+  private DomainMapper domainMapper;
 
   @Transactional(readOnly = true)
   public Page<LobbyDTO> findAll(Pageable pageable) {
@@ -72,6 +74,12 @@ public class LobbyService {
             : tagService.createTag(tagName))
         .toList();
 
+    List<DomainDTO> domains = lobbyRequestDTO.domains().stream()
+        .map(domainName -> domainService.existsByName(domainName)
+            ? domainService.findByName(domainName)
+            : domainService.createDomain(domainName))
+        .toList();
+
     String token = tokenService.recoverToken(request);
     User sectionUser = userRepository.findById(tokenService.getTokenId(token)).orElseThrow(() -> new EntityNotFoundException("Token de sessão invalido."));
 
@@ -86,7 +94,8 @@ public class LobbyService {
 
     Lobby lobby = new Lobby();
 
-    lobby.setDomains(lobbyRequestDTO.domains());
+
+    lobby.setDomains(domainMapper.listDTOToListEntity(domains));
     lobby.setName(lobbyRequestDTO.name());
     lobby.setTags(tagMapper.listDTOToListEntity(tags));
     lobby.setVisibility(lobbyRequestDTO.visibility());
@@ -124,7 +133,13 @@ public class LobbyService {
             : tagService.createTag(tagName))
         .toList();
 
-    lobby.setDomains(getNewOrDefault(lobbyRequestDTO.domains(), lobby.getDomains()));
+    List<DomainDTO> domains = lobbyRequestDTO.domains().stream()
+        .map(domainName -> domainService.existsByName(domainName)
+            ? domainService.findByName(domainName)
+            : domainService.createDomain(domainName))
+        .toList();
+
+    lobby.setDomains(getNewOrDefault(domainMapper.listDTOToListEntity(domains), lobby.getDomains()));
     lobby.setName(getNewOrDefault(lobbyRequestDTO.name(), lobby.getName()));
     lobby.setTags(getNewOrDefault(tagMapper.listDTOToListEntity(tags), lobby.getTags()));
     lobby.setVisibility(getNewOrDefault(lobbyRequestDTO.visibility(), lobby.getVisibility()));

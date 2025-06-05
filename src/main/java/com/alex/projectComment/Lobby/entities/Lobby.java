@@ -28,7 +28,9 @@ public class Lobby {
   @JoinTable(name = "lobby_tags")
   private List<Tag> tags;
 
-  private List<String> domains;
+  @ManyToMany
+  @JoinTable(name = "lobby_domains")
+  private List<Domain> domains;
 
   @Enumerated(EnumType.STRING)
   private VisibilityEnum visibility;
