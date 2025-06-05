@@ -3,6 +3,7 @@ package com.alex.projectComment.Lobby.dtos;
 import com.alex.projectComment.Lobby.entities.Domain;
 import com.alex.projectComment.Lobby.entities.Tag;
 import com.alex.projectComment.User.dtos.UserDTO;
+import com.alex.projectComment.enums.StatusEnum;
 import com.alex.projectComment.enums.VisibilityEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class LobbyDTO {
   private List<Domain> domains;
 
   private VisibilityEnum visibility;
+  private StatusEnum status;
 
   private UserDTO creator;
   private UserDTO userPrime;

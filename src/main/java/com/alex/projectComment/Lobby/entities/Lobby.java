@@ -1,6 +1,7 @@
 package com.alex.projectComment.Lobby.entities;
 
 import com.alex.projectComment.User.entities.User;
+import com.alex.projectComment.enums.StatusEnum;
 import com.alex.projectComment.enums.VisibilityEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,8 @@ public class Lobby {
 
   @Enumerated(EnumType.STRING)
   private VisibilityEnum visibility;
+  @Enumerated(EnumType.STRING)
+  private StatusEnum status;
 
   @ManyToOne
   private User creator;

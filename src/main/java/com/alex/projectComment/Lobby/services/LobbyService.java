@@ -8,6 +8,7 @@ import com.alex.projectComment.Lobby.mappers.TagMapper;
 import com.alex.projectComment.Lobby.repositories.LobbyRepository;
 import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.User.repositories.UserRepository;
+import com.alex.projectComment.enums.StatusEnum;
 import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.exceptions.PermissionDeniedException;
@@ -44,7 +45,7 @@ public class LobbyService {
 
   @Transactional(readOnly = true)
   public Page<LobbyDTO> findAll(Pageable pageable) {
-    Page<Lobby> result = lobbyRepository.findAll(pageable);
+    Page<Lobby> result = lobbyRepository.findAllByStatus(StatusEnum.ACTIVE, pageable);
     return result.map(lobbyMapper::toDTO);
   }
 
@@ -60,7 +61,7 @@ public class LobbyService {
       throw new IllegalArgumentException("Nome do Lobby não pode ser vazio.");
     }
 
-    if (lobbyRepository.existsByNameLikeIgnoreCase(lobbyRequestDTO.name())) {
+    if (lobbyRepository.existsByNameAndStatusIgnoreCase(lobbyRequestDTO.name(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Ja existe um Lobby com esse nome: " + lobbyRequestDTO.name());
     }
 
@@ -100,6 +101,7 @@ public class LobbyService {
     lobby.setTags(tagMapper.listDTOToListEntity(tags));
     lobby.setVisibility(lobbyRequestDTO.visibility());
     lobby.setCreationDate(LocalDateTime.now());
+    lobby.setStatus(StatusEnum.ACTIVE);
 
     lobby.setCreator(sectionUser);
     lobby.setUserPrime(sectionUser);
@@ -123,7 +125,7 @@ public class LobbyService {
       throw new PermissionDeniedException("O Usuário " + sectionUser.getUsername() + " não é um administrador deste Lobby.");
     }
 
-    if (lobbyRepository.existsByNameLikeIgnoreCase(lobbyRequestDTO.name())) {
+    if (lobbyRepository.existsByNameAndStatusIgnoreCase(lobbyRequestDTO.name(), StatusEnum.ACTIVE)) {
       throw new AlreadyInUseException("Ja existe um Lobby com esse nome: " + lobbyRequestDTO.name());
     }
 
@@ -157,6 +159,9 @@ public class LobbyService {
         .orElseThrow(() -> new EntityNotFoundException("Lobby com o id: " + id + " não encontrado."));
 
     String token = tokenService.recoverToken(request);
+    if (token == null) {
+      throw new IllegalArgumentException("Token de sessão não fornecido.");
+    }
 
     User sectionUser = userRepository.findById(tokenService.getTokenId(token))
         .orElseThrow(() -> new EntityNotFoundException("Token de sessão invalido."));
@@ -165,7 +170,8 @@ public class LobbyService {
       throw new PermissionDeniedException("Não autorizado a excluir um Lobby que voçe não seja o User Prime.");
     }
 
-    lobbyRepository.delete(lobby);
+    lobby.setStatus(StatusEnum.DELETED);
+    lobbyRepository.save(lobby);
 
   }
 }
