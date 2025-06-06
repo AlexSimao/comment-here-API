@@ -2,6 +2,7 @@ package com.alex.projectComment.User.dtos;
 
 import com.alex.projectComment.User.entities.Role;
 import com.alex.projectComment.User.entities.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Set;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
