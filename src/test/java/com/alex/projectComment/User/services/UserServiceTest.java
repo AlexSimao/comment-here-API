@@ -37,9 +37,6 @@ class UserServiceTest {
   @Autowired
   private AuthService authService;
 
-  @Autowired
-  private HttpServletRequest request;
-
   @BeforeEach
   void setTest() {
     userRepository.deleteAll();
