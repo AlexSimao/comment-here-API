@@ -12,10 +12,7 @@ import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.exceptions.PermissionDeniedException;
 import com.alex.projectComment.infra.security.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -43,6 +40,11 @@ class UserServiceTest {
   @Autowired
   private HttpServletRequest request;
 
+  @BeforeEach
+  void setTest() {
+    userRepository.deleteAll();
+  }
+
   @Test
   @Order(1)
   void findAllReturnsActiveUsers() {
@@ -56,11 +58,11 @@ class UserServiceTest {
 
   @Test
   @Order(2)
-  void findByIdReturnsUserWhenExists() {
-    Long id = 1L;
-    UserDTO result = userService.findById(id);
+  void findByUsernameReturnsUserWhenExists() {
+    authService.register(new UserRegisterRequestDTO("alex", "Alex", "alexsimao", "alex@email.com", "senha123"));
+    User result = userRepository.findByUsernameLikeIgnoreCase("alexsimao").get();
 
-    assertEquals(id, result.getId());
+    assertNotNull(result);
     assertEquals("alexsimao", result.getUsername());
   }
 
@@ -73,7 +75,8 @@ class UserServiceTest {
   @Test
   @Order(4)
   void updateUserUpdatesFieldsAndReturnsUpdatedToken() {
-    var user = userRepository.findById(1L).get();
+    authService.register(new UserRegisterRequestDTO("alex", "Alex", "alexsimao", "alex@email.com", "senha123"));
+    var user = userRepository.findByUsernameLikeIgnoreCase("alexsimao").get();
 
     // Simula token válido
     HttpServletRequest mockRequest = mock(HttpServletRequest.class);
@@ -90,9 +93,10 @@ class UserServiceTest {
   @Test
   @Order(5)
   void updateUserThrowsPermissionDeniedExceptionWhenTokenIdDoesNotMatch() {
+    authService.register(new UserRegisterRequestDTO("alex", "Alex", "alexsimao", "alex@email.com", "senha123"));
     authService.register(new UserRegisterRequestDTO("alex2", "Alex2", "alexsimao2", "alex2@email.com", "senha123"));
-    var user1 = userRepository.findById(1L).get();
-    var user2 = userRepository.findById(2L).get();
+    var user1 = userRepository.findByUsernameLikeIgnoreCase("alexsimao").get();
+    var user2 = userRepository.findByUsernameLikeIgnoreCase("alexsimao2").get();
 
     HttpServletRequest mockRequest = mock(HttpServletRequest.class);
     String token2 = tokenService.generateKeyToken(user2);
@@ -105,7 +109,8 @@ class UserServiceTest {
   @Test
   @Order(6)
   void deleteUserMarksUserAsDeletedAndReturnsResponse() {
-    var user = userRepository.findById(2L).get();
+    authService.register(new UserRegisterRequestDTO("alex", "Alex", "alexsimao", "alex@email.com", "senha123"));
+    var user = userRepository.findByUsernameLikeIgnoreCase("alexsimao").get();
 
     HttpServletRequest mockRequest = mock(HttpServletRequest.class);
     String token = tokenService.generateKeyToken(user);
@@ -113,7 +118,7 @@ class UserServiceTest {
 
     AuthLoginResponseDTO result = userService.deleteUser(user.getId(), mockRequest);
 
-    assertEquals("alexsimao2", result.username());
+    assertEquals("alexsimao", result.username());
     assertNull(result.token());
     assertEquals(StatusEnum.DELETED, userRepository.findById(user.getId()).get().getStatus());
   }
@@ -121,8 +126,10 @@ class UserServiceTest {
   @Test
   @Order(7)
   void deleteUserThrowsPermissionDeniedExceptionWhenTokenIdDoesNotMatch() {
-    User user1 = userRepository.findById(1L).get();
-    User user2 = userRepository.findById(2L).get();
+    authService.register(new UserRegisterRequestDTO("alex", "Alex", "alexsimao", "alex@email.com", "senha123"));
+    authService.register(new UserRegisterRequestDTO("alex2", "Alex2", "alexsimao2", "alex2@email.com", "senha123"));
+    var user1 = userRepository.findByUsernameLikeIgnoreCase("alexsimao").get();
+    var user2 = userRepository.findByUsernameLikeIgnoreCase("alexsimao2").get();
 
     HttpServletRequest mockRequest = mock(HttpServletRequest.class);
     String token2 = tokenService.generateKeyToken(user2);
