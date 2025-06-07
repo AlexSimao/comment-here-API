@@ -13,6 +13,7 @@ import com.alex.projectComment.User.entities.User;
 import com.alex.projectComment.User.mappers.UserMapper;
 import com.alex.projectComment.User.services.UserService;
 import com.alex.projectComment.enums.StatusEnum;
+import com.alex.projectComment.infra.exceptions.AlreadyInUseException;
 import com.alex.projectComment.infra.exceptions.EntityNotFoundException;
 import com.alex.projectComment.infra.exceptions.PermissionDeniedException;
 import com.alex.projectComment.infra.security.TokenService;
@@ -78,7 +79,7 @@ public class SectionService {
     }
 
     if (sectionRepository.findByNameWithStatusNotDeleted(sectionRequestDTO.name()).isPresent()) {
-      throw new IllegalArgumentException("Section com o nome: " + sectionRequestDTO.name() + " já existe.");
+      throw new AlreadyInUseException("Section com o nome: " + sectionRequestDTO.name() + " já existe.");
     }
 
     if (sectionRequestDTO.name() == null || sectionRequestDTO.name().isBlank()) {
@@ -86,7 +87,7 @@ public class SectionService {
     }
 
     if (sectionRepository.existsByNameAndStatusNot(sectionRequestDTO.name(), StatusEnum.DELETED)) {
-      throw new IllegalArgumentException("Já existe uma seção com o nome: " + sectionRequestDTO.name() + " que não está deletada.");
+      throw new AlreadyInUseException("Já existe uma seção com o nome: " + sectionRequestDTO.name() + " que não está deletada.");
     }
 
     Section newSection = new Section();
