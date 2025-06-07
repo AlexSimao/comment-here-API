@@ -12,4 +12,7 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
   @Query("SELECT s FROM Section s WHERE s.name = :name AND s.status != 'DELETED'")
   Optional<Section> findByNameWithStatusNotDeleted(String name);
 
+  @Query("SELECT s FROM Section s WHERE s.id = :id AND s.status != 'DELETED'")
+  Optional<Section> findByIdWithStatusNotDeleted(Long id);
+
 }
