@@ -44,7 +44,7 @@ public class SectionService {
 
   @Transactional(readOnly = true)
   public Page<SectionDTO> findAll(Pageable pageable) {
-    Page<Section> result = sectionRepository.findAll(pageable);
+    Page<Section> result = sectionRepository.findAllByStatusNot(StatusEnum.DELETED, pageable);
     return result.map(sectionMapper::toDTO);
   }
 
@@ -85,6 +85,10 @@ public class SectionService {
       throw new IllegalArgumentException("O nome da seção não pode ser nulo ou vazio.");
     }
 
+    if (sectionRepository.existsByNameAndStatusNot(sectionRequestDTO.name(), StatusEnum.DELETED)) {
+      throw new IllegalArgumentException("Já existe uma seção com o nome: " + sectionRequestDTO.name() + " que não está deletada.");
+    }
+
     Section newSection = new Section();
     newSection.setName(sectionRequestDTO.name());
     newSection.setLobby(lobby);
@@ -109,10 +113,33 @@ public class SectionService {
       throw new IllegalArgumentException("O nome da seção não pode ser vazio.");
     }
 
+    if (sectionRepository.existsByNameAndStatusNot(sectionUpdateRequestDTO.name(), StatusEnum.DELETED)) {
+      throw new IllegalArgumentException("Já existe uma seção com o nome: " + sectionUpdateRequestDTO.name() + " que não está deletada.");
+    }
+
+    if (sectionUpdateRequestDTO.status() == StatusEnum.DELETED) {
+      throw new IllegalArgumentException("Não é permitido atualizar o status para DELETED. Use o método de exclusão.");
+    }
+
     section.setName(getOrDefault(sectionUpdateRequestDTO.name(), section.getName()));
     section.setStatus(getOrDefault(sectionUpdateRequestDTO.status(), section.getStatus()));
 
+    section = sectionRepository.save(section);
+
     return sectionMapper.toDTO(sectionRepository.save(section));
+  }
+
+  @Transactional
+  public void deleteSection(Long id, HttpServletRequest request) {
+    Section section = sectionMapper.toEntity(this.findById(id));
+    User userSection = getUserFromRequest(request);
+
+    if (!section.getLobby().getUsersAdmin().contains(userSection)) {
+      throw new PermissionDeniedException("Usuário não tem permissão para deletar seções neste lobby.");
+    }
+
+    section.setStatus(StatusEnum.DELETED);
+    sectionRepository.save(section);
   }
 
   private User getUserFromRequest(HttpServletRequest request) {

@@ -24,7 +24,7 @@ public class Section {
   private String name;
   private LocalDateTime createdAt;
 
-  @OneToMany
+  @ManyToOne
   private User createdBy;
 
   @ManyToOne
