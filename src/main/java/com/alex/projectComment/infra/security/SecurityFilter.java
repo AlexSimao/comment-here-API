@@ -28,6 +28,11 @@ public class SecurityFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     var token = tokenService.recoverToken(request);
 
+    if (request.getMethod().equals("GET") && request.getRequestURI().startsWith("/comments/section")) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
     if (token != null) { // Se o Token for válido, autentica o usuário
       var login = tokenService.validateToken(token);
       UserDetails userDetails = userDetailsService.loadUserByUsername(login);

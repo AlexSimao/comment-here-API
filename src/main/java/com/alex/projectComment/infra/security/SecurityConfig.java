@@ -27,9 +27,10 @@ public class SecurityConfig {
         // Configura a política de sessão como stateless
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()
+            .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/comments/section/**").permitAll()
+            .requestMatchers("/h2-console/**").permitAll()
+            .anyRequest().authenticated()
         )
         .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Permite iframes;
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
