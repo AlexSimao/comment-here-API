@@ -58,6 +58,11 @@ public class SectionService {
   }
 
   @Transactional(readOnly = true)
+  public boolean existsById(Long id, StatusEnum status) {
+    return sectionRepository.existsByIdAndStatusNot(id, status);
+  }
+
+  @Transactional(readOnly = true)
   public SectionDTO findByName(String name) {
     Section result = sectionRepository.findByNameWithStatusNotDeleted(name)
         .orElseThrow(() -> new EntityNotFoundException("Section com o nome: " + name + " não encontrado."));

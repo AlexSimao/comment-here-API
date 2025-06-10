@@ -21,4 +21,6 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
   Optional<Section> findByIdWithStatusNotDeleted(Long id);
 
   boolean existsByNameAndStatusNot(String name, StatusEnum status);
+
+  boolean existsByIdAndStatusNot(Long id, StatusEnum statusEnum);
 }
