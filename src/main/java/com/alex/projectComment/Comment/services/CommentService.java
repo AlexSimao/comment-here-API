@@ -1,6 +1,7 @@
 package com.alex.projectComment.Comment.services;
 
 import com.alex.projectComment.Comment.dtos.CommentMinDTO;
+import com.alex.projectComment.Comment.entities.Comment;
 import com.alex.projectComment.Comment.mapper.CommentMapper;
 import com.alex.projectComment.Comment.repositories.CommentRepository;
 import com.alex.projectComment.Section.services.SectionService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -23,6 +25,7 @@ public class CommentService {
   @Autowired
   private SectionService sectionService;
 
+  @Transactional(readOnly = true)
   public Page<CommentMinDTO> findAllCommentBySectionId(Long sectionId, Pageable pageable) {
     if (sectionId == null || sectionId <= 0) {
       throw new IllegalArgumentException("Invalid section ID");
@@ -46,4 +49,18 @@ public class CommentService {
 
     return result;
   }
+
+  @Transactional(readOnly = true)
+  public boolean existsById(Long id, StatusEnum status) {
+    return commentRepository.existsByIdAndStatus(id, status);
+  }
+
+  @Transactional(readOnly = true)
+  public CommentMinDTO findById(Long id) {
+    Comment result = commentRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Comentário com Id: " + id + " não encontrado."));
+
+    return commentMapper.toMinDto(result);
+  }
+
 }
