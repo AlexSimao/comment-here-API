@@ -31,12 +31,11 @@ public class Comment {
   private User user;
 
   private LocalDateTime createdAt;
-
-  private LocalDateTime updatedAt;
   private boolean isEdited;
 
   @OneToMany
-  private List<Comment> responsesComments;
+  @JoinTable(name = "tb_comment_responses", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "response_id"))
+  private List<Comment> commentsResponses;
 
   @ManyToOne
   private Section section;

@@ -2,7 +2,6 @@ package com.alex.projectComment.Comment.dtos;
 
 import com.alex.projectComment.Lobby.dtos.DomainDTO;
 import com.alex.projectComment.Section.dtos.SectionDTO;
-import com.alex.projectComment.User.dtos.UserDTO;
 import com.alex.projectComment.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,17 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CommentDTO {
+public class CommentMinDTO {
   private Long id;
   private String content;
 
-  private UserDTO user;
+  private Long userId;
+  private String userName;
 
   private LocalDateTime createdAt;
 
   private boolean isEdited;
 
-  private List<CommentDTO> responsesComments;
+  private List<CommentMinDTO> responsesComments;
 
   private SectionDTO section;
 
@@ -36,6 +36,4 @@ public class CommentDTO {
 
   private Integer likesCount;
   private Integer dislikesCount;
-
-  private List<LikesDTO> likes;
 }
