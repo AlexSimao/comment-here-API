@@ -28,7 +28,7 @@ public class Comment {
   private String content;
 
   @ManyToOne
-  private User user;
+  private User createdBy;
 
   private LocalDateTime createdAt;
   private boolean isEdited;
