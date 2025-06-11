@@ -1,15 +1,15 @@
 package com.alex.projectComment.Comment.controllers;
 
 import com.alex.projectComment.Comment.dtos.CommentMinDTO;
+import com.alex.projectComment.Comment.dtos.CommentRequestDTO;
 import com.alex.projectComment.Comment.services.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("comments")
@@ -29,5 +29,10 @@ public class CommentController {
     return ResponseEntity.ok(result);
   }
 
+  @PostMapping("/section/{sectionId}")
+  public ResponseEntity<CommentMinDTO> create(@PathVariable Long sectionId, @RequestBody CommentRequestDTO commentRequestDTO, HttpServletRequest request) {
+    CommentMinDTO result = commentService.createComment(sectionId, commentRequestDTO, request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(result);
+  }
 
 }

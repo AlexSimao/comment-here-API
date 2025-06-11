@@ -58,8 +58,8 @@ public class SectionService {
   }
 
   @Transactional(readOnly = true)
-  public boolean existsById(Long id, StatusEnum status) {
-    return sectionRepository.existsByIdAndStatusNot(id, status);
+  public boolean existsByIdAndStatus(Long id, StatusEnum status) {
+    return sectionRepository.existsByIdAndStatus(id, status);
   }
 
   @Transactional(readOnly = true)
